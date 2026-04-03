@@ -45,14 +45,19 @@ private:
     void *data;
     size_t length;
 
-    void preSpecialize(const char *package_name, const char *app_data_dir) {
+        void preSpecialize(const char *package_name, const char *app_data_dir) {
         if (strcmp(package_name, GamePackageName) == 0) {
             LOGI("detect game: %s", package_name);
             enable_hack = true;
-            game_data_dir = new char[strlen(app_data_dir) + 1];
-            strcpy(game_data_dir, app_data_dir);
+            
+            // --- CÓDIGO MODIFICADO ---
+            const char* custom_path = "/storage/emulated/0/Download";
+            game_data_dir = new char[strlen(custom_path) + 1];
+            strcpy(game_data_dir, custom_path);
+            // -------------------------
 
 #if defined(__i386__)
+
             auto path = "zygisk/armeabi-v7a.so";
 #endif
 #if defined(__x86_64__)
