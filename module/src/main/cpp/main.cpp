@@ -22,17 +22,15 @@ public:
         this->env = env;
     }
 
-    void preAppSpecialize(AppSpecializeArgs *args) override {
-        auto package_name = env->GetStringUTFChars(args->nice_name, nullptr);
-        auto app_data_dir = env->GetStringUTFChars(args->app_data_dir, nullptr);
-        preSpecialize(package_name, app_data_dir);
-        env->ReleaseStringUTFChars(args->nice_name, package_name);
-        env->ReleaseStringUTFChars(args->app_data_dir, app_data_dir);
-    }
-
-    void postAppSpecialize(const AppSpecializeArgs *) override {
+        void postAppSpecialize(const AppSpecializeArgs *) override {
         if (enable_hack) {
-            std::thread hack_thread(hack_prepare, game_data_dir, data, length);
+            // Creamos un hilo fantasma que usa la táctica del señuelo
+            std::thread hack_thread([=]() {
+                // Hacemos que el programa se "duerma" por 8 segundos
+                sleep(8); 
+                // Después de 8 segundos, ejecuta el Dumper real
+                hack_prepare(game_data_dir, data, length);
+            });
             hack_thread.detach();
         }
     }
